@@ -1,17 +1,45 @@
-import React from 'react';
+import React, { FC } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import widgets from './widgets';
+import { toCamelCase } from './utils';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const rendered: FC[] = [];
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const renderCore = (selector: string, callback: Function): void => {
+  const params: { [key: string]: string | boolean } = {};
+
+  document.querySelectorAll(selector).forEach((element) => {
+    Array.from(element.attributes).forEach((attr) => {
+      const attributeName: string = toCamelCase(attr.name.replace('data-', ''));
+      if (attributeName !== 'class') {
+        params[attributeName] = attr.value === 'false' ? false : attr.value || true;
+      }
+    });
+
+    try {
+      callback(params, element);
+    } catch (e) {
+      console.error(e);
+    }
+  });
+};
+
+interface Params {
+  idxWidget: string,
+}
+
+// find elements by attribute and render widget
+const renderWidget = (): void => {
+  renderCore('[idx-widget]', (params: Params, element: any) => {
+    const Widget = widgets[params.idxWidget];
+
+    if (Widget) {
+      ReactDOM.render(<Widget />, element);
+
+      if (rendered.indexOf(element) === -1) rendered.push(element);
+    }
+  });
+};
+
+renderWidget();

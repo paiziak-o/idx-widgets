@@ -1,0 +1,29 @@
+.navigation {
+  font-family: arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+  flex-wrap: wrap;
+  .item {
+    background: #6AB6D8;
+    padding: 10px;
+    margin: 2px;
+    border: 3px solid #2E86BB;
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    position: relative;
+    &:after {
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      top: 100%;
+      margin-top: 10px;
+      width: 100%;
+      color: #333;
+      font-size: 12px;
+    }
+
+  }
+}
